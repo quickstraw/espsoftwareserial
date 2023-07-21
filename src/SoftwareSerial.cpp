@@ -85,7 +85,10 @@ void UARTBase::begin(uint32_t baud, Config config,
     m_oneWire = (m_rxPin == m_txPin);
     m_invert = invert;
     m_dataBits = 5 + (config & 07);
-    m_parityMode = static_cast<Parity>(config & 070);
+
+    //Removed parity...
+    m_parityMode = 0;
+
     m_stopBits = 1 + ((config & 0300) ? 1 : 0);
     m_pduBits = m_dataBits + static_cast<bool>(m_parityMode) + m_stopBits;
     m_bitTicks = (microsToTicks(1000000UL) + baud / 2) / baud;
@@ -97,11 +100,9 @@ void UARTBase::beginRx(bool hasPullUp, int bufCapacity, int isrBufCapacity) {
     m_rxReg = portInputRegister(digitalPinToPort(m_rxPin));
     m_rxBitMask = digitalPinToBitMask(m_rxPin);
     m_buffer.reset(new circular_queue<uint8_t>((bufCapacity > 0) ? bufCapacity : 64));
-    if (m_parityMode)
-    {
-        m_parityBuffer.reset(new circular_queue<uint8_t>((m_buffer->capacity() + 7) / 8));
-        m_parityInPos = m_parityOutPos = 1;
-    }
+    
+    //Removed parity...
+    
     m_isrBuffer.reset(new circular_queue<uint32_t, UARTBase*>((isrBufCapacity > 0) ?
         isrBufCapacity : m_buffer->capacity() * (2 + m_dataBits + static_cast<bool>(m_parityMode))));
     if (m_buffer && (!m_parityMode || m_parityBuffer) && m_isrBuffer) {
@@ -369,37 +370,9 @@ size_t IRAM_ATTR UARTBase::write(const uint8_t* buffer, size_t size, Parity pari
         // push LSB start-data-parity-stop bit pattern into uint32_t
         // Stop bits: HIGH
         uint32_t word = ~0UL;
-        // inverted parity bit, performance tweak for xor all-bits-set word
-        if (parity && m_parityMode)
-        {
-            uint32_t parityBit;
-            switch (parity)
-            {
-            case PARITY_EVEN:
-                // from inverted, so use odd parity
-                parityBit = byte;
-                parityBit ^= parityBit >> 4;
-                parityBit &= 0xf;
-                parityBit = (0x9669 >> parityBit) & 1;
-                break;
-            case PARITY_ODD:
-                // from inverted, so use even parity
-                parityBit = byte;
-                parityBit ^= parityBit >> 4;
-                parityBit &= 0xf;
-                parityBit = (0x6996 >> parityBit) & 1;
-                break;
-            case PARITY_MARK:
-                parityBit = 0;
-                break;
-            case PARITY_SPACE:
-                // suppresses warning parityBit uninitialized
-            default:
-                parityBit = 1;
-                break;
-            }
-            word ^= parityBit;
-        }
+        
+        //Removed parity...
+        
         word <<= m_dataBits;
         word |= byte;
         // Start bit: LOW
@@ -515,13 +488,9 @@ void UARTBase::rxBits(const uint32_t isrTick) {
             if (level) { m_rxCurByte |= (BYTE_ALL_BITS_SET << (8 - dataBits)); }
             continue;
         }
-        // parity bit
-        if (m_parityMode && m_rxLastBit == (m_dataBits - 1)) {
-            ++m_rxLastBit;
-            --bits;
-            m_rxCurParity = level;
-            continue;
-        }
+        
+        // Removed parity...
+        
         // stop bits
         // Store the received value in the buffer unless we have an overflow
         // if not high stop bit level, discard word
