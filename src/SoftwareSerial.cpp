@@ -99,7 +99,7 @@ void UARTBase::beginRx(bool hasPullUp, int bufCapacity, int isrBufCapacity) {
     m_rxGPIOHasPullUp = hasPullUp;
     m_rxReg = portInputRegister(digitalPinToPort(m_rxPin));
     m_rxBitMask = digitalPinToBitMask(m_rxPin);
-    m_buffer.reset(new circular_queue<uint8_t>((bufCapacity > 0) ? bufCapacity : 64));
+    m_buffer.reset(new circular_queue<uint16_t>((bufCapacity > 0) ? bufCapacity : 64));
     
     //Removed parity...
     
@@ -481,11 +481,11 @@ void UARTBase::rxBits(const uint32_t isrTick) {
         }
         // data bits
         if (m_rxLastBit < (m_dataBits - 1)) {
-            uint8_t dataBits = min(bits, static_cast<uint32_t>(m_dataBits - 1 - m_rxLastBit));
+            uint16_t dataBits = min(bits, static_cast<uint32_t>(m_dataBits - 1 - m_rxLastBit));
             m_rxLastBit += dataBits;
             bits -= dataBits;
             m_rxCurByte >>= dataBits;
-            if (level) { m_rxCurByte |= (BYTE_ALL_BITS_SET << (8 - dataBits)); }
+            if (level) { m_rxCurByte |= (BYTE_ALL_BITS_SET << (16 - dataBits)); }
             continue;
         }
         
@@ -495,7 +495,7 @@ void UARTBase::rxBits(const uint32_t isrTick) {
         // Store the received value in the buffer unless we have an overflow
         // if not high stop bit level, discard word
         if (bits >= static_cast<uint32_t>(m_pduBits - 1 - m_rxLastBit) && level) {
-            m_rxCurByte >>= (sizeof(uint8_t) * 8 - m_dataBits);
+            m_rxCurByte >>= (sizeof(uint16_t) * 16 - m_dataBits);
             if (!m_buffer->push(m_rxCurByte)) {
                 m_overflow = true;
             }
