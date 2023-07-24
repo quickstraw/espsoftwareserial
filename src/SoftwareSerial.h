@@ -354,7 +354,7 @@ private:
     uint8_t m_parityOutPos;
     int8_t m_rxLastBit; // 0 thru (m_pduBits - m_stopBits - 1): data/parity bits. -1: start bit. (m_pduBits - 1): stop bit.
     uint16_t m_rxCurByte = 0;
-    std::unique_ptr<circular_queue<uint8_t> > m_buffer;
+    std::unique_ptr<circular_queue<uint16_t> > m_buffer;
     std::unique_ptr<circular_queue<uint8_t> > m_parityBuffer;
     uint32_t m_periodStart;
     uint32_t m_periodDuration;
