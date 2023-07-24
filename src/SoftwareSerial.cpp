@@ -84,13 +84,13 @@ void UARTBase::begin(uint32_t baud, Config config,
     if (-1 != txPin) m_txPin = txPin;
     m_oneWire = (m_rxPin == m_txPin);
     m_invert = invert;
-    m_dataBits = 5 + (config & 07);
+    m_dataBits = 16;
 
     //Removed parity...
     m_parityMode = 0;
 
-    m_stopBits = 1 + ((config & 0300) ? 1 : 0);
-    m_pduBits = m_dataBits + static_cast<bool>(m_parityMode) + m_stopBits;
+    m_stopBits = 1;
+    m_pduBits = m_dataBits + m_stopBits;
     m_bitTicks = (microsToTicks(1000000UL) + baud / 2) / baud;
     m_intTxEnabled = true;
 }
