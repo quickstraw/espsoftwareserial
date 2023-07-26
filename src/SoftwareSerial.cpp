@@ -366,10 +366,10 @@ size_t IRAM_ATTR UARTBase::write(const uint16_t* buffer, size_t size, Parity par
     m_periodDuration = 0;
     m_periodStart = microsToTicks(micros());
     for (size_t cnt = 0; cnt < size; ++cnt) {
-        uint8_t byte = pgm_read_byte(buffer + cnt) & dataMask;
+        uint16_t byte = pgm_read_word(buffer + cnt * 2) & dataMask;
         // push LSB start-data-parity-stop bit pattern into uint32_t
         // Stop bits: HIGH
-        uint32_t word = ~0UL;
+        uint32_t word = ~0UL; // All ones.
         
         //Removed parity...
         
