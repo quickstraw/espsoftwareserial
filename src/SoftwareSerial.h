@@ -242,7 +242,7 @@ public:
     }
     void flush() override;
     size_t write(uint8_t byte) override;
-    size_t write(uint16_t word) override;
+    size_t write(uint16_t word);
     size_t write(uint8_t byte, Parity parity);
     size_t write(const uint8_t* buffer, size_t size) override;
     size_t write(const uint16_t* buffer, size_t size);
