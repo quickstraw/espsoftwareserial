@@ -334,12 +334,21 @@ void IRAM_ATTR UARTBase::writePeriod(
     }
 }
 
+size_t UARTBase::write(uint8_t byte) {
+    uint16_t word = byte;
+    return write(&word, 1);
+}
+
 size_t UARTBase::write(uint16_t word) {
     return write(&word, 1);
 }
 
 size_t UARTBase::write(uint8_t byte, Parity parity) {
     return write(&byte, 1, parity);
+}
+
+size_t UARTBase::write(const uint8_t* buffer, size_t size) {
+    return 0;
 }
 
 size_t UARTBase::write(const uint16_t* buffer, size_t size) {
