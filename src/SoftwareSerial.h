@@ -241,13 +241,13 @@ public:
         return readBytes(reinterpret_cast<uint8_t*>(buffer), size);
     }
     void flush() override;
-    size_t write(uint8_t byte) override;
+    size_t write(uint16_t word) override;
     size_t write(uint8_t byte, Parity parity);
-    size_t write(const uint8_t* buffer, size_t size) override;
+    size_t write(const uint16_t* buffer, size_t size) override;
     size_t write(const char* buffer, size_t size) {
         return write(reinterpret_cast<const uint8_t*>(buffer), size);
     }
-    size_t write(const uint8_t* buffer, size_t size, Parity parity);
+    size_t write(const uint16_t* buffer, size_t size, Parity parity);
     size_t write(const char* buffer, size_t size, Parity parity) {
         return write(reinterpret_cast<const uint8_t*>(buffer), size, parity);
     }
