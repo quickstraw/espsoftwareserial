@@ -334,19 +334,19 @@ void IRAM_ATTR UARTBase::writePeriod(
     }
 }
 
-size_t UARTBase::write(uint8_t byte) {
-    return write(&byte, 1);
+size_t UARTBase::write(uint16_t word) {
+    return write(&word, 1);
 }
 
 size_t UARTBase::write(uint8_t byte, Parity parity) {
     return write(&byte, 1, parity);
 }
 
-size_t UARTBase::write(const uint8_t* buffer, size_t size) {
+size_t UARTBase::write(const uint16_t* buffer, size_t size) {
     return write(buffer, size, m_parityMode);
 }
 
-size_t IRAM_ATTR UARTBase::write(const uint8_t* buffer, size_t size, Parity parity) {
+size_t IRAM_ATTR UARTBase::write(const uint16_t* buffer, size_t size, Parity parity) {
     if (m_rxValid) { rxBits(); }
     if (!m_txValid) { return -1; }
 
