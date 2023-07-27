@@ -236,7 +236,7 @@ int UARTBase::read(uint16_t* buffer, size_t size) {
 }
 
 size_t UARTBase::readBytes(uint8_t* buffer, size_t size) {
-    if (!m_rxValid || !size) { return 0; }
+    /**if (!m_rxValid || !size) { return 0; }
     size_t count = 0;
     auto start = millis();
     do {
@@ -250,7 +250,8 @@ size_t UARTBase::readBytes(uint8_t* buffer, size_t size) {
             optimistic_yield(1000UL);
         }
     } while (millis() - start < _timeout);
-    return count;
+    return count;**/
+    return 0;
 }
 
 int UARTBase::available() {
