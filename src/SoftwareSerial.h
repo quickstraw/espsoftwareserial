@@ -223,23 +223,12 @@ public:
         return (0x9669 >> byte) & 1;
     }
     /// The read(buffer, size) functions are non-blocking, the same as readBytes but without timeout
-    int read(uint8_t* buffer, size_t size)
-#if defined(ESP8266)
-        override
-#endif
-        ;
-    /// The read(buffer, size) functions are non-blocking, the same as readBytes but without timeout
-    int read(char* buffer, size_t size) {
-        return read(reinterpret_cast<uint8_t*>(buffer), size);
-    }
+    int read(uint16_t* buffer, size_t size);
+        
     /// @returns The number of bytes read into buffer, up to size. Times out if the limit set through
     ///          Stream::setTimeout() is reached.
     size_t readBytes(uint8_t* buffer, size_t size) override;
-    /// @returns The number of bytes read into buffer, up to size. Times out if the limit set through
-    ///          Stream::setTimeout() is reached.
-    size_t readBytes(char* buffer, size_t size) override {
-        return readBytes(reinterpret_cast<uint8_t*>(buffer), size);
-    }
+        
     void flush() override;
     size_t write(uint8_t byte) override;
     size_t writeWord(uint16_t word);
