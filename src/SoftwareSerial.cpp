@@ -87,7 +87,7 @@ void UARTBase::begin(uint32_t baud, Config config,
     m_dataBits = 16;
 
     //Removed parity...
-    m_parityMode = 0;
+    m_parityMode = static_cast<Parity>(000);
 
     m_stopBits = 1;
     m_pduBits = m_dataBits + m_stopBits;
@@ -218,7 +218,7 @@ int UARTBase::read() {
     return val;
 }
 
-int UARTBase::read(uint8_t* buffer, size_t size) {
+int UARTBase::read(uint16_t* buffer, size_t size) {
     if (!m_rxValid) { return 0; }
     int avail;
     if (0 == (avail = m_buffer->pop_n(buffer, size))) {
